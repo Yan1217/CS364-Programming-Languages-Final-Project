@@ -57,7 +57,7 @@ class Lexer:
 
     #d["\w"] = "String Literal"
    # d[] = "Comment"
-    d["^(////).*"] = "Comment"
+    d["^(//).*"] = "Comment"
     #d[] = "Identifier"
 
     d['(\+)'] = "Plus"
@@ -66,7 +66,7 @@ class Lexer:
     d["(\))"] = "Rparen"
 
     # Identifier
-    d["^\D\w*"] = "Identifier"
+    d["^[a-zA-Z_]\w*"] = "Identifier"
 
 
 
@@ -103,9 +103,10 @@ class Lexer:
         # pattern above using the VERBOSE option
         split_patt = re.compile(
             r"""             # Split on 
-               ~e(\+) |        #  plus and capture
-               ~e(-) |         #  minus and capture, minus not special unless in []
-               (\\\\)\n |
+               (~e\+) |        #  plus and capture
+               (~e-) |         #  minus and capture, minus not special unless in []
+               (=)  |
+               (\\\w+\n) |
                \s   |        #  whitespace
                (\() |        #  left paren and capture
                (\))          #  right paren and capture
@@ -131,7 +132,8 @@ class Lexer:
 
 
 if __name__ == "__main__":
-    print(re.fullmatch("^(////).*","////hello world"))
+    print(re.fullmatch("^(//).*","//hello world"))
+    print(re.fullmatch("[0-9a-zA-Z_]*",".4"))
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
