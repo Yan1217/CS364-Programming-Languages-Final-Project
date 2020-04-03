@@ -50,20 +50,23 @@ class Lexer:
     # True/False
     d["True|true|False|false"] = "Keyword"
 
-    # Identifier
-    d["^\D\w*"] = "Identifier"
+
 
     # String Literal
 
 
     #d["\w"] = "String Literal"
    # d[] = "Comment"
+    d["^(////).*"] = "Comment"
     #d[] = "Identifier"
 
     d['(\+)'] = "Plus"
     d['(-)'] = "Minus"
     d["(\()"] = "Lparen"
     d["(\))"] = "Rparen"
+
+    # Identifier
+    d["^\D\w*"] = "Identifier"
 
 
 
@@ -102,9 +105,11 @@ class Lexer:
             r"""             # Split on 
                ~e(\+) |        #  plus and capture
                ~e(-) |         #  minus and capture, minus not special unless in []
+               (\\\\)\n |
                \s   |        #  whitespace
                (\() |        #  left paren and capture
                (\))          #  right paren and capture
+              
             """,
             re.VERBOSE
         )
@@ -126,7 +131,7 @@ class Lexer:
 
 
 if __name__ == "__main__":
-    print(re.fullmatch("^(\")$(\")","\"123edwefefew__dwd\""))
+    print(re.fullmatch("^(////).*","////hello world"))
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
