@@ -42,10 +42,9 @@ class Lexer:
 
     # Real Number
     # check whether we can combine them later
-    d["\d+[.(e.)]\d+"] = "Real Number" # without underscore, without +/-
-    d["\d+e[\+\-]\d+"] = "Real Number" # without underscore, with +/-
-    d["\d+(_)*\d*[(_)]\d+[.(e.)]\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore, without +/-
-    d["\d+(_)*\d*[(_)]\d+e[\+\-]\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore, without +/-
+    d["\d+[.(e.)][\+\-]?\d+"] = "Real Number" # without underscore, without +/-
+    d["\d+(_)*\d*[(_)]\d+[.(e.)][\+\-]?\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore
+
 
     # True/False
     d["True|true|False|false"] = "Keyword"
