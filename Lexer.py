@@ -115,12 +115,10 @@ class Lexer:
 
 
         for i, line in enumerate(self.f, start=1):
-            tokens = (t for t in split_patt.split(line) if t)
+            # skip over comment
+            new_line = re.sub("//.*"," ", line)
+            tokens = (t for t in split_patt.split(new_line) if t)
             for t in tokens:
-                # skip over comment
-                if t == "//":
-                    break
-
               #  try:
                 for k,v in Lexer.d.items():
                     if (re.fullmatch(k,t)!= None):
@@ -136,6 +134,7 @@ class Lexer:
 if __name__ == "__main__":
     print(re.fullmatch("^(//).*","//hello world"))
     print(re.search("^\"\w*\"$","\"njnjb\""))
+    print(re.sub("//.*"," ","nbkjbj// This is comment"))
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
