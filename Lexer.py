@@ -142,7 +142,9 @@ if __name__ == "__main__":
 
     while True:
         try:
-            print(next(g))
+            print(next(g)[0],"\t",end="")
+            print(next(g)[1],"\t",end="")
+            print(next(g)[2])
         except StopIteration:
             print("Done")
             break
