@@ -37,32 +37,73 @@ class Lexer:
 
     # Integer:
     # check whether we can combine them later
-    d["(\d+)"] = "Integer"  # without underscore
-    d["\d+(_)*\d*[(_)]\d+"]="Integer"  # with underscore
+    d["\d+|\d+[_\d]*\d+"] = "Integer"  # without underscore
+    #d["\d+(_)*\d*[(_)]\d+"]="Integer"  # with underscore
 
     # Real Number
+    #\d +.?\d + [_\d] * \d +
     # check whether we can combine them later
-    d["\d+[.(e.)][\+\-]?\d+"] = "Real Number" # without underscore, without +/-
-    d["\d+(_)*\d*[(_)]\d+[.(e.)][\+\-]?\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore
+    #d["\d+\.?\d*e?[\+-]?\d+"] = "real number" # 3.4
+    #d["\d+\.?\d*e?[\+-]?\d+[_\d]*\d+"] = "real number"  #3.4_4
+    #d["\d+[_\d]*\d+\.?\d*e?[\+-]?\d+"]  = "real number"  #3_3.4
+    #d["\d+[_\d]*\d+\.?\d*e?[\+-]?\d+[_\d]*\d+"]  = "real number"
+
+    d["\d+([_\d]*\d+)?\.?(\d+([_\d]*\d+)?)?e?[\+-]?\d+([_\d]*\d+)?"] = "real number"
+    # with e .
+    #d["\d+\.\d+e[\+-]?\d+"] = "real number" # 3.3e4
+   # d["\d+\.\d+e[\+-]?\d+[_\d]*\d+"] = "real number"   # 3.3e4_4
+   # d["\d+\.\d+[_\d]*\d+e[\+-]?\d+"] = "real number"
+  #  d["\d+[_\d]*\d+\.\d+e[\+-]?\d+"] = "real number"
+   # d["\d+[_\d]*\d+\.\d+[_\d]*\d+e[\+-]?\d+"] = "real number"   #3_3.3_3e4
+   # d["\d+[_\d]*\d+\.\d+[_\d]*\d+e[\+-]?\d+[_\d]*\d+"] = "real number"
+
+   # d["[\d+[.(e\+)(e-)]?\d+[_\d]*\d+"] = "real number"  #3._
+    #d["\d+\.\d+e?[\+\-]?\d+"] = "Real Number" # without underscore, without +/-
+    #d["\d+(_)*\d*[(_)]\d+.?\d+(_)*\d*[(_)]\d+e|(e\+)|(e\-)?\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore
 
 
     # True/False
     d["True|true|False|false"] = "Keyword"
 
-
+    # other keyword
+    d["print|bool|else|false|if|true|float|int|while|main|char"] = "Keyword"
 
     # String Literal
     d["^\"\w*\"$"] = "String Literal"
 
-    #d["\w"] = "String Literal"
-
-    #d[] = "Identifier"
-
-    d['(\+)'] = "Plus"
-    d['(-)'] = "Minus"
+    # operators
+    d["\|\|"] = "or"
+    d["&&"] = "and"
+    d["=="] = "euqal-equal"
+    d["!="] = "not-equal"
+    d["<"] = "smaller"
+    d["<="] = "smaller-equal"
+    d[">"] = "greater"
+    d[">="] = "greater-equal"
+    d['(\+)'] = "plus"
+    d['(-)'] = "minus"
+    d["\*"] = "multiply"
+    d["/"] = "devide"
+    d["="] = "assignment"
+    d["%"] = "mod"
+    d["!"] = "exclamation"
+    d[";"] = "semicolon"
+    d[","] = "comma"
+    d["{"] = "L{"
+    d["}"] = "R}"
     d["(\()"] = "Lparen"
     d["(\))"] = "Rparen"
-
+    d["\["] = "L["
+    d["\]"] = "R["
+    d[">>"] = "shift right"
+    d["<<"] = "shift left"
+    """
+    
+    
+    
+    
+    
+"""
     # Identifier
     d["^[a-zA-Z_]\w*"] = "Identifier"
 
@@ -103,11 +144,23 @@ class Lexer:
             r"""             # Split on 
                (~e\+) |        #  plus and capture
                (~e-) |         #  minus and capture, minus not special unless in []
-               (=)  |
-              (".+~\"$) |    # Literal String
+               (~[=><!]=)  |
+              #(".+~\"$) |    # Literal String
                \s   |        #  whitespace
                (\() |        #  left paren and capture
-               (\))          #  right paren and capture
+               (\))  |       #  right paren and capture
+               ({)   |      # right { and capture
+               (})   |      # left } and capture
+               (\[)   |      # right [ and capture
+               (\])   |     # left ] and capture
+               (,)    |     # comma and capture
+               (;)    |     #semicolon and capture
+               (!)    |     #exclamation and capture
+               (%)  |
+               (\*) |
+               (/)  |
+               (>>)  |
+               (<<) 
               
             """,
             re.VERBOSE
@@ -123,7 +176,7 @@ class Lexer:
                 for c in literal_string:
                     #print(new_line[c.start():c.end()])
                     #　it will generate extra \ if the string ends with \
-                    yield new_line[c.start():c.end()], "Literal String" , i
+                    yield  "Literal String" , new_line[c.start():c.end()], i
             else:
                 print("None")
 
@@ -135,7 +188,7 @@ class Lexer:
               #  try:
                 for k,v in Lexer.d.items():
                     if (re.fullmatch(k,t)!= None):
-                        yield t, v, i
+                        yield v, t, i
                         break
 
                 #except:
@@ -145,6 +198,7 @@ class Lexer:
 
 
 if __name__ == "__main__":
+    print(re.fullmatch("\d+.?\d+[_\d]*\d+","3.141_592_653_589_793"))
     print(re.fullmatch("^(//).*","//hello world"))
     s = "He said \"go\""
     print(s)

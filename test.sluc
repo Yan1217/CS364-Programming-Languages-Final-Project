@@ -1,27 +1,10 @@
-12_4
-1
-23
-3.6
-""
-3e9
-63e.8
-2e+1
-2e-3
-+
--
-2.7e9
-12__3
-12_4e-3_9
-true
-False
-abc3
-csa_2
-sad_
-23ffr
-// This is comment
-"hello"=print("He said \"go\"")
+_9ident = -3.14159
 
-.4
-4.
-18
 
+123_456_789 and 3.141_592_653_589_793
+-2.34e9
+3_123.456_789e-1_2
+
+"a string // literal" "// and another"   // two string lit tokens
+
+"a string \"literal\" that contains \"escaped\" double quotes"  // one token
