@@ -37,7 +37,7 @@ class Lexer:
 
     # Integer:
     # check whether we can combine them later
-    d["\d+"] = "Integer"  # without underscore
+    d["(\d+)"] = "Integer"  # without underscore
     d["\d+(_)*\d*[(_)]\d+"]="Integer"  # with underscore
 
     # Real Number
@@ -52,11 +52,10 @@ class Lexer:
 
 
     # String Literal
-
+    d["^\"\w*\"$"] = "String Literal"
 
     #d["\w"] = "String Literal"
-   # d[] = "Comment"
-    d["^(//).*"] = "Comment"
+
     #d[] = "Identifier"
 
     d['(\+)'] = "Plus"
@@ -89,7 +88,7 @@ class Lexer:
             print("Exiting")
             sys.exit(1)  # can't go on
 
-    def token_generator(self) -> Generator[Tuple[int, str], None, None]:
+    def token_generator(self) -> Generator[Tuple[int, str, int], None, None]:
         """
         Returns the tokens of the language
         """
@@ -105,7 +104,7 @@ class Lexer:
                (~e\+) |        #  plus and capture
                (~e-) |         #  minus and capture, minus not special unless in []
                (=)  |
-               (\\\w+\n) |
+              (".+~\"$) |    # Literal String
                \s   |        #  whitespace
                (\() |        #  left paren and capture
                (\))          #  right paren and capture
@@ -118,6 +117,10 @@ class Lexer:
         for i, line in enumerate(self.f, start=1):
             tokens = (t for t in split_patt.split(line) if t)
             for t in tokens:
+                # skip over comment
+                if t == "//":
+                    break
+
               #  try:
                 for k,v in Lexer.d.items():
                     if (re.fullmatch(k,t)!= None):
@@ -132,7 +135,7 @@ class Lexer:
 
 if __name__ == "__main__":
     print(re.fullmatch("^(//).*","//hello world"))
-    print(re.fullmatch("[0-9a-zA-Z_]*",".4"))
+    print(re.search("^\"\w*\"$","\"njnjb\""))
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
