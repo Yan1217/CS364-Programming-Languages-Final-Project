@@ -19,7 +19,8 @@ csa_2
 sad_
 23ffr
 // This is comment
-"thisisstring""koj"
+"hello"=print("He said \"go\"")
+
 .4
 4.
 18

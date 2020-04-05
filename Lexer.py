@@ -117,6 +117,19 @@ class Lexer:
         for i, line in enumerate(self.f, start=1):
             # skip over comment
             new_line = re.sub("//.*"," ", line)
+            String_pattern = re.compile("\"(.*?)\"")
+            literal_string = String_pattern.finditer(new_line)
+            if (literal_string != None):
+                for c in literal_string:
+                    #print(new_line[c.start():c.end()])
+                    #　it will generate extra \ if the string ends with \
+                    yield new_line[c.start():c.end()], "Literal String" , i
+            else:
+                print("None")
+
+
+          #  yield
+            new_line = re.sub("\".*?\"", " ", new_line)
             tokens = (t for t in split_patt.split(new_line) if t)
             for t in tokens:
               #  try:
@@ -133,18 +146,30 @@ class Lexer:
 
 if __name__ == "__main__":
     print(re.fullmatch("^(//).*","//hello world"))
-    print(re.search("^\"\w*\"$","\"njnjb\""))
-    print(re.sub("//.*"," ","nbkjbj// This is comment"))
+    s = "He said \"go\""
+    print(s)
+    #print(re.search("~\\\".*~\\\"",s))
+    print(re.search("\"(.+?)\"", s))
+    print(re.sub("//.*"," ","comment// This is comment"))
+    String_patter = re.compile(r"(~\\)\".*?(~\\)\"")
+    literal_strin = String_patter.search(s)
+    print(literal_strin)
+  #  for c in literal_strin:
+   #     print(s[c.start():c.end()])
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
 
 
     while True:
+
+
+
         try:
-            print(next(g)[0],"\t",end="")
-            print(next(g)[1],"\t",end="")
-            print(next(g)[2])
+            for i in next(g):
+               # i, line in enumerate(self.f, start=1):
+                print (i,"\t\t\t", end="")
+            print("")
         except StopIteration:
             print("Done")
             break
