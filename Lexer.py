@@ -36,31 +36,10 @@ class Lexer:
     d = {} # empty dictionary
 
     # Integer:
-    # check whether we can combine them later
-    d["\d+|\d+[_\d]*\d+"] = "Integer"  # without underscore
-    #d["\d+(_)*\d*[(_)]\d+"]="Integer"  # with underscore
+    d["\d+|\d+[_\d]*\d+"] = "Integer"
 
-    # Real Number
-    #\d +.?\d + [_\d] * \d +
-    # check whether we can combine them later
-    #d["\d+\.?\d*e?[\+-]?\d+"] = "real number" # 3.4
-    #d["\d+\.?\d*e?[\+-]?\d+[_\d]*\d+"] = "real number"  #3.4_4
-    #d["\d+[_\d]*\d+\.?\d*e?[\+-]?\d+"]  = "real number"  #3_3.4
-    #d["\d+[_\d]*\d+\.?\d*e?[\+-]?\d+[_\d]*\d+"]  = "real number"
-
+    # real number
     d["\d+([_\d]*\d+)?\.?(\d+([_\d]*\d+)?)?e?[\+-]?\d+([_\d]*\d+)?"] = "real number"
-    # with e .
-    #d["\d+\.\d+e[\+-]?\d+"] = "real number" # 3.3e4
-   # d["\d+\.\d+e[\+-]?\d+[_\d]*\d+"] = "real number"   # 3.3e4_4
-   # d["\d+\.\d+[_\d]*\d+e[\+-]?\d+"] = "real number"
-  #  d["\d+[_\d]*\d+\.\d+e[\+-]?\d+"] = "real number"
-   # d["\d+[_\d]*\d+\.\d+[_\d]*\d+e[\+-]?\d+"] = "real number"   #3_3.3_3e4
-   # d["\d+[_\d]*\d+\.\d+[_\d]*\d+e[\+-]?\d+[_\d]*\d+"] = "real number"
-
-   # d["[\d+[.(e\+)(e-)]?\d+[_\d]*\d+"] = "real number"  #3._
-    #d["\d+\.\d+e?[\+\-]?\d+"] = "Real Number" # without underscore, without +/-
-    #d["\d+(_)*\d*[(_)]\d+.?\d+(_)*\d*[(_)]\d+e|(e\+)|(e\-)?\d+(_)*\d*[(_)]\d+"] = "Real Number" # with underscore
-
 
     # True/False
     d["True|true|False|false"] = "Keyword"
@@ -143,7 +122,8 @@ class Lexer:
         split_patt = re.compile(
             r"""             # Split on 
                (~e\+) |        #  plus and capture
-               (~e-) |         #  minus and capture, minus not special unless in []
+               (^e-)  |
+              # (~e-) |         #  minus and capture, minus not special unless in []
                (~[=><!]=)  |
               #(".+~\"$) |    # Literal String
                \s   |        #  whitespace
@@ -198,21 +178,22 @@ class Lexer:
 
 
 if __name__ == "__main__":
-    print(re.fullmatch("\d+.?\d+[_\d]*\d+","3.141_592_653_589_793"))
+    print(re.search("~e-","-3.141_592_653_589_793"))
     print(re.fullmatch("^(//).*","//hello world"))
     s = "He said \"go\""
     print(s)
-    #print(re.search("~\\\".*~\\\"",s))
     print(re.search("\"(.+?)\"", s))
     print(re.sub("//.*"," ","comment// This is comment"))
     String_patter = re.compile(r"(~\\)\".*?(~\\)\"")
     literal_strin = String_patter.search(s)
     print(literal_strin)
-  #  for c in literal_strin:
-   #     print(s[c.start():c.end()])
+
     lex = Lexer("test.sluc")
 
     g = lex.token_generator()
+
+    print("%-35s %-30s %s" % ("Token", "Name", "Line Number"))
+    print("--------------------------------------------------------------------------------------")
 
 
     while True:
@@ -221,8 +202,7 @@ if __name__ == "__main__":
 
         try:
             for i in next(g):
-               # i, line in enumerate(self.f, start=1):
-                print (i,"\t\t\t", end="")
+               print("%-25s"%(i), "\t\t\t",end="")
             print("")
         except StopIteration:
             print("Done")
