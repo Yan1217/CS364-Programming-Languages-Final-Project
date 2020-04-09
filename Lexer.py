@@ -121,10 +121,9 @@ class Lexer:
         # pattern above using the VERBOSE option
         split_patt = re.compile(
             r"""             # Split on 
-               (~e\+) |        #  plus and capture
-               (^e-)  |
-              # (~e-) |         #  minus and capture, minus not special unless in []
-               (~[=><!]=)  |
+               ((?<!e)\+) |        #  plus and capture
+               ((?<!e)-) |         #  minus and capture, minus not special unless in []
+               ([=><!]=|=)  |   # ==, >=, <=, != and capture
               #(".+~\"$) |    # Literal String
                \s   |        #  whitespace
                (\() |        #  left paren and capture
@@ -178,8 +177,8 @@ class Lexer:
 
 
 if __name__ == "__main__":
-    print(re.search("~e-","-3.141_592_653_589_793"))
-    print(re.fullmatch("^(//).*","//hello world"))
+
+    print(re.match("(^e)","a"))
     s = "He said \"go\""
     print(s)
     print(re.search("\"(.+?)\"", s))
@@ -188,7 +187,8 @@ if __name__ == "__main__":
     literal_strin = String_patter.search(s)
     print(literal_strin)
 
-    lex = Lexer("test.sluc")
+   # lex = Lexer(sys.argv)
+    lex = Lexer("test2.sluc")
 
     g = lex.token_generator()
 
