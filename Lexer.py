@@ -76,15 +76,17 @@ class Lexer:
     d["\]"] = "R["
     d[">>"] = "shift right"
     d["<<"] = "shift left"
-    """
-    
-    
-    
-    
-    
-"""
+
     # Identifier
     d["^[a-zA-Z_]\w*"] = "Identifier"
+
+    """
+    w = {}
+    w["\d+_"] = "Error : underscore at the end of integer"
+    w["(\d+([_\d]*\d+)?\.)*(\d+([_\d]*\d+)?)?e?[\+-]?\d+([_\d]*\d+)?"] = "Error: multiple dots"
+    """
+
+
 
 
 
@@ -152,27 +154,39 @@ class Lexer:
 
 
         for i, line in enumerate(self.f, start=1):
-            # skip over comment
-            new_line = re.sub("(((\".*\")*\".*)*)//.*","\g<1>", line)
+            # throw comment
+            # if there is "...//..."
+            if re.search("\".*?//.*?\"",line)!=None:
+                line = re.sub("((.*?\".*?\".*?)+)//.*", "\g<1>", line)
+            # if there is not "...//..."
+            else:
+                line = re.sub("(.*?)//.*", "\g<1>", line)
+
+
             String_pattern = re.compile("(?<!\\\)\".*?(?<!\\\)\"")
 
-            literal_string = String_pattern.finditer(new_line)
+            literal_string = String_pattern.finditer(line)
             if (literal_string != None):
                 for c in literal_string:
-                      yield  "Literal String" , new_line[c.start():c.end()], i
+                      yield  "Literal String" , line[c.start():c.end()], i
             else:
                 print("None")
 
 
           #  yield
-            new_line = re.sub("\".*?\"", " ", new_line)
-            tokens = (t for t in split_patt.split(new_line) if t)
+            line = re.sub("(?<!\\\)\".*?(?<!\\\)\"", " ", line)
+           # print(line," on line ",i)
+            tokens = (t for t in split_patt.split(line) if t)
             for t in tokens:
-              #  try:
+            #try:
                 for k,v in Lexer.d.items():
-                    if (re.fullmatch(k,t)!= None):
+                    if re.fullmatch(k,t)!= None:
                         yield v, t, i
                         break
+                else:
+                    yield "None", t , i
+
+
 
                 #except:
                    # print("I can't find this")
@@ -181,6 +195,9 @@ class Lexer:
 
 
 if __name__ == "__main__":
+    b = "\"a string // literal\" \"// and another\"   // two"
+    print(re.fullmatch("((.*?\".*?\".*?)+)//.*", b))
+    print(re.fullmatch("(.*(.* \".*\".)*)//.*","print(\" // the tokens ; ) 12345\")"))
 
     s = "He said \"go\""
 

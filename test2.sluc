@@ -31,7 +31,7 @@
 
   	3.4.5    // illegal, not a valid floating-point identifier
 	4a       // illegal, not a valid identifier
-	"        // illegal, missing closing quote
+	"      // illegal, missing closing quote
 	? @#$  'a' ^ ~ ` :  // all gibberish
 
 	//////////////////////////////////////////////////////////////////////
@@ -67,4 +67,5 @@
 
 	"a string  literal" "// and another"   // two string lit tokens
 
-	"a string \"literal\" that contains \\"escaped\" double quotes"  // one token
+	"a string \\"literal\" that contains \"escaped\" double quotes"  // one token
+

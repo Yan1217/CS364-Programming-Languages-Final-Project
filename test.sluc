@@ -1,5 +1,7 @@
 
 ;)  ( 12345    // the tokens ; ) 12345
-"a string // literal" "// and another"   // two string lit tokens
+
+print("// this is a string literal, not a comment");
+"a string // literal" "// and another"   // two
 
 "a string \"literal\" that contains \"escaped\" double quotes"
