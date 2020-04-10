@@ -99,14 +99,19 @@ class Lexer:
     INTEGER = 5
 '''
     # fn - file name we are lexing
-    def __init__(self, fn: str):
-
-        try:
-            self.f = open(fn)
-        except IOError:
-            print("File {} not found".format(fn))
+    def __init__(self, arg: list):
+        if len(arg)>1:
+            try:
+                self.f = open(arg[1])
+            except IOError:
+                print("File {} not found".format(arg[1]))
+                print("Exiting")
+                sys.exit(1)  # can't go on
+        else:
+            print("there is not input file")
             print("Exiting")
-            sys.exit(1)  # can't go on
+            sys.exit(1)
+		
 
     def token_generator(self) -> Generator[Tuple[int, str, int], None, None]:
         """
@@ -187,8 +192,8 @@ if __name__ == "__main__":
     literal_strin = String_patter.search(s)
     print(literal_strin)
 
-   # lex = Lexer(sys.argv)
-    lex = Lexer("test2.sluc")
+    lex = Lexer(sys.argv)
+   # lex = Lexer("test2.sluc")
 
     g = lex.token_generator()
 
