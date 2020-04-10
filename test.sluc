@@ -1,13 +1,5 @@
-- 9- -
-2e-4
-3=7
-_9ident = -3.14159
 
-3-5
-123_456_789 and 3.141_592_653_589_793
--2.34e9
-3_123.456_789e-1_2
-
+;)  ( 12345    // the tokens ; ) 12345
 "a string // literal" "// and another"   // two string lit tokens
 
-"a string \"literal\" that contains \"escaped\" double quotes"  // one token
+"a string \"literal\" that contains \"escaped\" double quotes"

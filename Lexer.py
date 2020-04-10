@@ -153,14 +153,13 @@ class Lexer:
 
         for i, line in enumerate(self.f, start=1):
             # skip over comment
-            new_line = re.sub("//.*"," ", line)
-            String_pattern = re.compile("\"(.*?)\"")
+            new_line = re.sub("(((\".*\")*\".*)*)//.*","\g<1>", line)
+            String_pattern = re.compile("(?<!\\\)\".*?(?<!\\\)\"")
+
             literal_string = String_pattern.finditer(new_line)
             if (literal_string != None):
                 for c in literal_string:
-                    #print(new_line[c.start():c.end()])
-                    #　it will generate extra \ if the string ends with \
-                    yield  "Literal String" , new_line[c.start():c.end()], i
+                      yield  "Literal String" , new_line[c.start():c.end()], i
             else:
                 print("None")
 
@@ -183,14 +182,7 @@ class Lexer:
 
 if __name__ == "__main__":
 
-    print(re.match("(^e)","a"))
     s = "He said \"go\""
-    print(s)
-    print(re.search("\"(.+?)\"", s))
-    print(re.sub("//.*"," ","comment// This is comment"))
-    String_patter = re.compile(r"(~\\)\".*?(~\\)\"")
-    literal_strin = String_patter.search(s)
-    print(literal_strin)
 
     lex = Lexer(sys.argv)
    # lex = Lexer("test2.sluc")

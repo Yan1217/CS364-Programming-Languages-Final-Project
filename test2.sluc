@@ -64,6 +64,7 @@
 	// even ill-formed string literal in a comment should be OK
 	// this is a "comment and is ok, even with closing double quote missing
 
-	"a string // literal" "// and another"   // two string lit tokens
 
-	"a string \"literal\" that contains \"escaped\" double quotes"  // one token
+	"a string  literal" "// and another"   // two string lit tokens
+
+	"a string \"literal\" that contains \\"escaped\" double quotes"  // one token
