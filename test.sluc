@@ -5,3 +5,5 @@ print("// this is a string literal, not a comment");
 "a string // literal" "// and another"   // two
 
 "a string \"literal\" that contains \"escaped\" double quotes"
+
+"He said \"go\""
