@@ -23,7 +23,7 @@ class Lexer:
     # operators
     d["or"] = "\|\|"
     d["and"] = "&&"
-    d["euqal-equal"] = "=="
+    d["equal-equal"] = "=="
     d["not-equal"] = "!="
     d["smaller"] = "<"
     d["smaller-equal"] = "<="
@@ -54,9 +54,17 @@ class Lexer:
 
 
 
-    def __init__(self, arg: list):
+    def __init__(self, fn: str):
+        try:
+            self.f = open(fn)
+        except IOError:
+            print("File {} not found".format(fn))
+            print("Exiting")
+            sys.exit(1)  # can't go on
+
+        """
         # if there are 2 system argument(one of them is Lexer.py), run the program
-        if len(arg) == 2:
+        if len(arg) >= 2:
             try:
                 self.f = open(arg[1])
             # throw IOError if file name is wrong/ file does not exist
@@ -65,15 +73,16 @@ class Lexer:
                 print("Exiting")
                 sys.exit(1)  # can't go on
         # exit with error message if there are more than one input files
-        elif len(arg) > 2:
-            print("Expect 1 argument, given ", len(arg)-1)
-            print("Exiting")
-            sys.exit(1)
+       # elif len(arg) > 2:
+           # print("Expect 1 argument, given ", len(arg)-1)
+           # print("Exiting")
+           # sys.exit(1)
         # exit with error message if there is not input file
         else:
             print("there is not input file")
             print("Exiting")
             sys.exit(1)
+        """
 
     def token_generator(self) -> Generator[Tuple[int, str, int], None, None]:
         """
@@ -121,11 +130,12 @@ class Lexer:
                 # if it can not match any pattern in the dictionary, yield error message and line #
                 else:
                     yield "Error: illegal token", t, i
+        yield "EOF","",""
 
 
 if __name__ == "__main__":
 
-    lex = Lexer(sys.argv)
+    lex = Lexer("test.sluc")
 
     g = lex.token_generator()
 
