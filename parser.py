@@ -100,12 +100,30 @@ class Parser:
         """
         Params          →  Type id { , Type id } | ε
         """
-        tmpType = self.type
-        self.currtok = next(self.tg)
-        tmpID =
+      
+        params = []
+        if self.currtok[0] != "EOF":
+               params.append(" ")
+            
+        else:
+            tmpType = self.type
+            self.currtok = next(self.tg)
+            params.append(tmpType)
+            tmpID = "Identifier"
+            
+            self.currtok = next(self.tg)
+            params.append(tmpID)
+            
+            while self.currtok[0] == ",":
+                tmpType = self.type
+                self.currtok = next(self.tg)
+                tmpID = "Identifier"
+                self.currtok = next(self.tg)
+                params.append(tmpType)
+                params.append(tmpID)
+                self.currtok = next(self.tg)
 
-        pass
-
+        return params
     def declarations(self) -> Expr:
 
         """
